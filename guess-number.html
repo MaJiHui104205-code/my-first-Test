@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>猜数字小游戏</title>
+  <style>
+    body {
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: #fff;
+      padding: 40px 36px;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+      width: 320px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      color: #333;
+    }
+    p.tip {
+      color: #888;
+      font-size: 14px;
+      margin: 0 0 24px;
+    }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: #667eea; }
+    button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px;
+      font-size: 16px;
+      color: #fff;
+      background: #667eea;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #5568d3; }
+    button.reset { background: #aaa; }
+    button.reset:hover { background: #999; }
+    .message {
+      margin-top: 20px;
+      font-size: 16px;
+      min-height: 24px;
+      font-weight: bold;
+    }
+    .high { color: #e67e22; }
+    .low { color: #3498db; }
+    .win { color: #27ae60; }
+    .count { color: #999; font-size: 13px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🎯 猜数字</h1>
+    <p class="tip">我想了一个 1 到 100 之间的数字，猜猜看！</p>
+    <input type="number" id="guess" min="1" max="100" placeholder="输入 1-100" autofocus>
+    <button id="submit">猜一下</button>
+    <div class="message" id="message"></div>
+    <div class="count" id="count"></div>
+    <button class="reset" id="reset">重新开始</button>
+  </div>
+
+  <script>
+    let answer, tries;
+
+    function newGame() {
+      answer = Math.floor(Math.random() * 100) + 1;
+      tries = 0;
+      document.getElementById("guess").value = "";
+      document.getElementById("message").textContent = "";
+      document.getElementById("count").textContent = "";
+      document.getElementById("guess").focus();
+    }
+
+    function check() {
+      const input = document.getElementById("guess");
+      const msg = document.getElementById("message");
+      const value = Number(input.value);
+
+      if (!input.value || value < 1 || value > 100) {
+        msg.className = "message";
+        msg.textContent = "请输入 1 到 100 之间的数字";
+        return;
+      }
+
+      tries++;
+      document.getElementById("count").textContent = "已经猜了 " + tries + " 次";
+
+      if (value === answer) {
+        msg.className = "message win";
+        msg.textContent = "🎉 恭喜你猜对了！答案就是 " + answer;
+      } else if (value > answer) {
+        msg.className = "message high";
+        msg.textContent = "太大了，再小一点 ⬇️";
+      } else {
+        msg.className = "message low";
+        msg.textContent = "太小了，再大一点 ⬆️";
+      }
+      input.select();
+    }
+
+    document.getElementById("submit").addEventListener("click", check);
+    document.getElementById("reset").addEventListener("click", newGame);
+    document.getElementById("guess").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") check();
+    });
+
+    newGame();
+  </script>
+</body>
+</html>
